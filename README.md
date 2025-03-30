@@ -2,6 +2,12 @@
 
 A Model Context Protocol (MCP) server for HR operations built for use with Claude Desktop.
 
+
+
+https://github.com/user-attachments/assets/4cb89115-daf2-4647-81d2-aadd9e0dd29e
+
+
+
 ## Overview
 
 This server implements the [Model Context Protocol](https://github.com/anthropics/anthropic-cookbook/tree/main/context_protocol) to provide Claude with structured access to employee data and HR operations.
