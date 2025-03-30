@@ -18,6 +18,8 @@ The HR MCP Server enables Claude to:
 - Submit and manage global leave requests
 - Translate text with HR/HCM context awareness
 
+For a detailed architectural overview, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+
 ## Tools
 
 The server provides the following tools to Claude:
