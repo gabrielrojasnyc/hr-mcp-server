@@ -20,6 +20,9 @@ The HR MCP Server enables Claude to:
 
 For a detailed architectural overview, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
+![System Design](https://github.com/user-attachments/assets/f4b0135c-d50a-4b1b-b35a-dcca6fa5079b)
+
+
 ## Tools
 
 The server provides the following tools to Claude:
