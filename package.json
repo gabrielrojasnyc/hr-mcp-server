@@ -1,16 +1,16 @@
 {
   "name": "hr-mcp-server-2",
   "version": "1.0.0",
-  "description": "",
+  "description": "HR Model Context Protocol server with employee management tools and HCM-aware translation",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "start": "node build/index.js"
   },
-  "keywords": [],
+  "keywords": ["mcp", "claude", "hr", "employee", "anthropic"],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "type": "module",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.8.0",

@@ -4,13 +4,24 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import employeesData from "./data/employees.js";
 
+/**
+ * Utility for logging messages in JSON-RPC format for the MCP server
+ */
+const logMessage = (message: string): void => {
+  console.info(JSON.stringify({
+    jsonrpc: "2.0",
+    method: "log",
+    params: { message }
+  }));
+};
+
 // Create MCP server with name and version
 const server = new McpServer({
   name: "hr-mcp-server",
   version: "1.0.0"
 });
 
-// Add get_employee_info tool using the high-level API
+// Add get_employee_info tool
 server.tool(
   "get_employee_info",
   { 
@@ -18,13 +29,7 @@ server.tool(
     include_sensitive: z.boolean().optional().default(false).describe("Whether to include sensitive information like SSN (default: false)")
   },
   async ({ employee_id, include_sensitive }) => {
-    console.info(JSON.stringify({
-      jsonrpc: "2.0",
-      method: "log",
-      params: { 
-        message: `Looking up employee: ${employee_id}` 
-      }
-    }));
+    logMessage(`Looking up employee: ${employee_id}`);
     
     // Look up employee in our "database"
     const employee = employeesData[employee_id];
@@ -174,13 +179,7 @@ server.tool(
     output_format: "brief",
     include_sensitive: false
   } }) => {
-    console.info(JSON.stringify({
-      jsonrpc: "2.0",
-      method: "log",
-      params: { 
-        message: `Searching employees with query: ${JSON.stringify(query)}` 
-      }
-    }));
+    logMessage(`Searching employees with query: ${JSON.stringify(query)}`);
     
     // Helper function to check if a field matches the query
     const fieldMatches = (field: string | undefined | null, searchTerm: string | undefined): boolean => {
@@ -484,13 +483,7 @@ server.tool(
     }).optional().describe("Contact information during leave")
   },
   async ({ employee_id, start_date, end_date, reason, countries, contact_info }) => {
-    console.info(JSON.stringify({
-      jsonrpc: "2.0",
-      method: "log",
-      params: { 
-        message: `Processing global leave request for employee: ${employee_id}` 
-      }
-    }));
+    logMessage(`Processing global leave request for employee: ${employee_id}`);
     
     // Check if employee exists
     const employee = employeesData[employee_id];
@@ -645,17 +638,64 @@ server.tool(
   }
 );
 
+// Add translate_text prompt
+server.prompt(
+  "translate_text",
+  "Translates text from one language to another with automatic source language detection and HCM context awareness",
+  {
+    text: z.string().describe("The text to translate"),
+    target_language: z.string().describe("The target language to translate the text to")
+  },
+  async ({ text, target_language }) => {
+    logMessage(`HCM-aware translation request to ${target_language} with auto-detection`);
+    
+    return {
+      messages: [
+        {
+          role: "user",
+          content: { 
+            type: "text", 
+            text: `You are a professional translator with expertise in Human Capital Management (HCM) terminology.
+
+Language Translation Task for HCM Context
+
+First, identify the source language of the provided text. Then translate the text to ${target_language}, with special attention to Human Capital Management context and terminology.
+
+Translation Requirements:
+
+1. Maintain the original meaning while properly handling HCM-specific terminology
+2. Preserve all formatting including bullets, tables, and paragraph structure
+3. Keep proper nouns, system field names, and UI elements untranslated unless specifically required
+4. Pay special attention to contextual meanings of terms with multiple interpretations in HCM
+
+HCM Context-Specific Term Guide:
+- "Check": May refer to payment method (payroll context) or verification action (approval context)
+- "Period": May refer to payroll timeframe or medical leave context
+- "Benefits": May refer to employee insurance/perks or general advantages
+- "Development": May refer to employee skill growth or software/system creation
+- "Position": May refer to job role/title or physical location
+- "Cycle": May refer to recurring process or biological cycle
+- "Performance": May refer to employee evaluation or system functionality
+- "Record": May refer to employee data entry or achievement notation
+- "Time": May refer to work hours or chronological measurement
+- "Report": May refer to formal documentation or verbal communication
+
+Text to translate:
+"${text}"
+
+Provide ONLY the translated text without explanations, notes, or your thought process. Don't include quotation marks around the translated text unless they were in the original.`
+          }
+        }
+      ]
+    };
+  }
+);
+
 // Connect the server using stdio transport for Claude Desktop
 const transport = new StdioServerTransport();
 server.connect(transport)
   .then(() => {
-    console.info(JSON.stringify({
-      jsonrpc: "2.0",
-      method: "log",
-      params: { 
-        message: "HR MCP Server running..." 
-      }
-    }));
+    logMessage("HR MCP Server running...");
   })
   .catch(err => {
     console.error(JSON.stringify({

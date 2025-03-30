@@ -7,13 +7,29 @@
 - View logs: `cat mcp.log` (server communication logs)
 
 ## Code Style
-- Formatting: Use Prettier with default config
-- Types: TypeScript strict mode with proper typing
-- Naming: camelCase for variables/functions, PascalCase for classes
-- Error handling: Return isError: true for error responses
+- **Formatting**: Use Prettier with default config
+- **Types**: TypeScript strict mode with proper typing
+- **Naming**: 
+  - camelCase for variables/functions 
+  - PascalCase for classes
+  - Descriptive names that reveal intent
+- **Error handling**: 
+  - Return isError: true for error responses
+  - Validate all inputs with appropriate error messages
+  - Use consistent error response format
+- **Comments**:
+  - Add explanatory comments for complex logic
+  - Comment each tool with its purpose and parameters
+  - Use section headers to organize related code
+- **Functions**:
+  - Single responsibility principle
+  - Extract complex logic into helper functions
+  - Keep functions at a reasonable size
 
 ## Project Structure
 - `/src`: Source code (main server implementation)
+  - `index.ts`: Main server implementation with tools and prompts
+  - `/data`: Data models and employee database
 - `/build`: Compiled JavaScript output
 
 ## MCP Server Implementation
@@ -33,6 +49,25 @@
     }
   )
   ```
+- Define prompts with the `server.prompt()` method:
+  ```typescript
+  server.prompt(
+    "prompt_name",
+    "Description of what this prompt provides",
+    { param_name: z.string().describe("Parameter description") },
+    async ({ param_name }) => {
+      // Prompt implementation
+      return {
+        messages: [
+          {
+            role: "user",
+            content: { type: "text", text: "Your prompt text" }
+          }
+        ]
+      };
+    }
+  )
+  ```
 - Tool response format must be:
   ```typescript
   {
@@ -45,9 +80,19 @@
   const transport = new StdioServerTransport();
   server.connect(transport);
   ```
-- Log with proper JSON-RPC format:
+- Use centralized logging utility for consistent JSON-RPC format:
   ```typescript
-  console.info('{"jsonrpc": "2.0", "method": "log", "params": { "message": "Log message" }}');
+  // Define logging utility
+  const logMessage = (message: string): void => {
+    console.info(JSON.stringify({
+      jsonrpc: "2.0",
+      method: "log",
+      params: { message }
+    }));
+  };
+  
+  // Use throughout code
+  logMessage("Your log message here");
   ```
 
 ## Available Tools
@@ -114,6 +159,23 @@ Submit a global leave request for employees traveling to multiple countries
 - Examples:
   - Basic request: `request_global_leave({ employee_id: "E002", start_date: "2025-05-01", end_date: "2025-05-15", reason: "Family vacation", countries: ["USA", "UK"] })`
   - With contact info: `request_global_leave({ employee_id: "E002", start_date: "2025-05-01", end_date: "2025-05-15", reason: "Family vacation", countries: ["USA", "UK"], contact_info: { email: "bob.vacation@example.com", phone: "+1-555-123-4567" } })`
+
+## Available Prompts
+
+### translate_text
+Translates text from any language to a specified target language with automatic source language detection and specialized HR/HCM context awareness
+- Parameters:
+  - `text`: (string, required) The text to translate
+  - `target_language`: (string, required) The target language to translate the text to
+- Example: `translate_text({ text: "Les employés doivent soumettre leurs feuilles de temps avant la fin de la période.", target_language: "English" })`
+
+This prompt specializes in translating HR/HCM content with proper handling of domain-specific terminology that may have different meanings in HR contexts vs. general language:
+- Check (payment method vs. verification action)
+- Period (payroll timeframe vs. medical leave)
+- Benefits (employee perks vs. general advantages)
+- Development (employee growth vs. software creation)
+- Position (job role vs. physical location)
+- Other HR-specific technical terms
 
 ## Employee Data Structure
 The HR system contains comprehensive employee records with the following fields:

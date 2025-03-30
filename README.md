@@ -10,6 +10,7 @@ The HR MCP Server enables Claude to:
 - Look up detailed employee information
 - Search for employees by various criteria
 - Submit and manage global leave requests
+- Translate text with HR/HCM context awareness
 
 ## Tools
 
@@ -84,6 +85,20 @@ request_global_leave({
 })
 ```
 
+### 4. Translation Prompt: `translate_text`
+
+Translates text from any language to a specified target language with automatic source language detection and special focus on HR/HCM terminology.
+
+```javascript
+// Basic translation:
+translate_text({ 
+  text: "Les employés doivent soumettre leurs feuilles de temps avant la fin de la période.", 
+  target_language: "English" 
+})
+```
+
+The translation system handles HR-specific terminology with contextual awareness, preserving the technical meaning of terms like "benefits," "period," "check," "position," etc., which have special meanings in Human Capital Management contexts.
+
 ## Installation
 
 ```bash
@@ -127,6 +142,36 @@ npx ts-node-esm src/index.ts
 - [@modelcontextprotocol/sdk](https://github.com/anthropics/model-context-protocol-sdk-js) - MCP SDK for JavaScript/TypeScript
 - [Zod](https://github.com/colinhacks/zod) - TypeScript-first schema validation
 
+## Code Structure
+
+The server is organized with a focus on clean, maintainable code:
+
+- **Centralized logging** - Consistent JSON-RPC formatted logging
+- **Tool-based architecture** - Each tool has a clear responsibility
+- **Schema validation** - Strong typing with Zod for all inputs
+- **Error handling** - Comprehensive validation with clear error messages
+- **Documentation** - Inline comments explaining complex logic
+
 ## License
 
-ISC
+MIT
+
+Copyright (c) 2024
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
