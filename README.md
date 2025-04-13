@@ -1,4 +1,6 @@
 # HR MCP Server
+[![smithery badge](https://smithery.ai/badge/@gabrielrojasnyc/hr-mcp-server)](https://smithery.ai/server/@gabrielrojasnyc/hr-mcp-server)
+
 
 A Model Context Protocol (MCP) server for HR operations built for use with Claude Desktop.
 
@@ -112,6 +114,15 @@ The translation system handles HR-specific terminology with contextual awareness
 
 ## Installation
 
+### Installing via Smithery
+
+To install HR MCP Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@gabrielrojasnyc/hr-mcp-server):
+
+```bash
+npx -y @smithery/cli install @gabrielrojasnyc/hr-mcp-server --client claude
+```
+
+### Manual Installation
 ```bash
 # Clone the repository
 git clone https://github.com/yourusername/hr-mcp-server.git
