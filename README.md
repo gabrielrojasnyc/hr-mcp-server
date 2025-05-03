@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/gabrielrojasnyc-hr-mcp-server-badge.png)](https://mseep.ai/app/gabrielrojasnyc-hr-mcp-server)
+
 # HR MCP Server
 
 A Model Context Protocol (MCP) server for HR operations built for use with Claude Desktop.
